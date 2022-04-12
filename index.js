@@ -29,6 +29,7 @@ $(document).ready(function(){
                 $("#videos").append(video)
               
             });
+            $("#playlist").html("")
             addPlayList();
         });
         
@@ -73,7 +74,7 @@ $(document).ready(function(){
     }
 
     function addPlayList(){
-        $("#playlist").html("")
+        
         url = `https://www.googleapis.com/youtube/v3/playlists?key=${API_KEY}&part=contentDetails,snippet,status&channelId=${channelId}`
             $.get(url,function(data){
             $("#playlist").append(`<h1 class="text-primary text-center p-3">PlayList</h1>`)
