@@ -6,7 +6,7 @@ $(document).ready(function(){
     var totalViews;
     var totalSubscribers;
     var totalVideos;
-    var channelId = $("#search").val();
+    let channelId = $("#search").val();
     var url;
     var API_KEY = "AIzaSyCxQznORkrVEClZ4DoZTir2TyBKf1hFty4";
     var video = '';
@@ -27,13 +27,14 @@ $(document).ready(function(){
                 video = `<iframe width="50%" height="315" src="https://www.youtube.com/embed/${element.id.videoId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                 
                 $("#videos").append(video)
+              
             });
-            
+            addPlayList();
         });
         
     }
   
-    $("form").submit(function(){
+    $("form").submit(function(){    
         //fetch the value that  is entered into the input field
 
         channelId = $("#search").val();
@@ -42,7 +43,7 @@ $(document).ready(function(){
         //API KEY AIzaSyCxQznORkrVEClZ4DoZTir2TyBKf1hFty4 
         url = `https://www.googleapis.com/youtube/v3/channels?key=${API_KEY}&id=${channelId}&part=snippet,contentDetails,statistics`;
         $.get(url,function(data){
-
+            
             fetchData(data);
             bindData(imageLink,width,height,title,totalSubscribers,totalViews,totalVideos);
             
@@ -68,6 +69,29 @@ $(document).ready(function(){
         $("#subcribers").html("Tổng số lượt theo dõi : " + totalSubscribers);
         $("#totalViews").html("Tổng số lượt xem kênh : " + totalViews);
         $("#totalVideos").html("Tổng số video trên kênh : " + totalVideos);
+       
+    }
+
+    function addPlayList(){
+        url = `https://www.googleapis.com/youtube/v3/playlists?key=${API_KEY}&part=contentDetails,snippet,status&channelId=${channelId}`
+            $.get(url,function(data){
+            $("#playlist").append(`<h1 class="text-primary text-center p-3">PlayList</h1>`)
+            data.items.forEach(e=>{
+                
+                $("#playlist").append(`<div class="col-6">
+                    <div class="card" style="width: 18rem;">
+                    <img src="${e.snippet.thumbnails.medium.url}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                    <p class="card-text">Tên playlist : ${e.snippet.title} </br> 
+                        Tổng số video : ${e.contentDetails.itemCount} </br>
+                        Link : <a href="https://www.youtube.com/watch?list=${e.id}">Click</a>
+                    </p>
+                    </div>
+                </div>
+                </div>`)
+            })
+        })
+
     }
 
 });
